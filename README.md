@@ -1,4 +1,4 @@
-# TIE-23526 Web Architectures - Group project work repository
+# COMP.CS.510 Web Development 2 - Group project work repository
 
 Hello WebArchers!
 
