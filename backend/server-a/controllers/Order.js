@@ -3,12 +3,9 @@
 var utils = require('../utils/writer.js');
 var Order = require('../service/OrderService');
 
-var sendTask = require('../rabbit-utils/sendTask.js')
-var receiveTask = require('../rabbit-utils/receiveTask.js')
-
 module.exports.addOrder = function addOrder (req, res, next) {
   var order = req.swagger.params['order'].value;
-  Order.addOrder(order)
+  /*Order.addOrder(order)
   .then(function (response) {
     utils.writeJson(res, response);
     console.log(order)
@@ -21,7 +18,14 @@ module.exports.addOrder = function addOrder (req, res, next) {
   })
   .catch(function (response) {
     utils.writeJson(res, response);
-  });
+  });*/
+  Order.addOrder(order)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
 };
 
 module.exports.getOrderById = function getOrderById (req, res, next) {

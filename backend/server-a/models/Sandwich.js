@@ -23,7 +23,7 @@ const sandwichSchema = new Schema({
     }
 });
 
-sandwichSchema.plugin(AutoIncrement, {id:'id_seq', inc_field: 'id'});
+sandwichSchema.plugin(AutoIncrement, {id:'sandwich_id_seq', inc_field: 'id'});
 
 const Sandwich = mongoose.model('Sandwich', sandwichSchema);
 

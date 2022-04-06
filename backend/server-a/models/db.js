@@ -124,7 +124,7 @@ module.exports = function () {
                 let temp_name = sandwich.name;
                 if(!sandwichList.includes(temp_name)){
                     Sandwich.addSandwich(sandwich)
-                    .then((i) => {
+                    .then(() => {
                         console.log('Sandwich saved successfully');
                     }).catch((error) => {
                         console.log(error);
