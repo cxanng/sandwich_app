@@ -2,8 +2,8 @@
     background-color: #ffe5d9;
     -webkit-box-shadow: none;
     box-shadow: none;
-    position: absolute;
-    bottom: 0;
+    /* position: absolute;
+    bottom: 0; */
     width: 100%;
     height: 70px; 
 }

@@ -1,6 +1,6 @@
 .menu {
   margin-top: 85px;
-  margin-bottom: 70px;
+  margin-bottom: -70px;
   display: flex;
   flex-direction: column;
   height: 90%;
@@ -9,6 +9,14 @@
   justify-content: center;
   align-items: center;
 }
+
+.menu::after{
+  content: "";
+  display: block;
+  height: 70px;
+}
+
+
 .menu-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, 260px);
