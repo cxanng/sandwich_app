@@ -9,6 +9,7 @@ import {
 import NavBar from "./navBarAndFooter/NavBar";
 import Footer from "./navBarAndFooter/Footer";
 import Homepage from "./homepage/Homepage";
+import Menu from "./menu/Menu";
 
 const SandwichApp = () => {
     return (
@@ -17,7 +18,7 @@ const SandwichApp = () => {
                 <NavBar />
 
                 <Routes>
-                    <Route path="/menu" element={<></>} />
+                    <Route path="/menu" element={<Menu />} />
                     <Route path="/" element={<Homepage />} />
                 </Routes>
             </Router>
