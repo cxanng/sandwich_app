@@ -3,17 +3,18 @@
     top: 0;
     display: flex;
     z-index: 1;
-    height: 70px;
+    height: 85px;
     background-color: white;
     width: 100%;
     align-items: center;
+    justify-content: flex-start;
 }
 
 .app-logo {
     padding-left: 20px;
     left: 0;
     height: 70px;
-    width: 100px;
+    width: 250px;
     object-fit: contain;
 }
 
@@ -22,4 +23,9 @@
     color: black;
     margin-left: 30px;
     font-family: "Gill Sans", sans-serif;
+}
+
+.link-navbar:hover {
+    color: black;
+    transform: translateY(-1px);
 }

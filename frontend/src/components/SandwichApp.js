@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"
 
 import NavBar from "./navBarAndFooter/NavBar";
+import Footer from "./navBarAndFooter/Footer";
 import Homepage from "./homepage/Homepage";
 
 const SandwichApp = () => {
@@ -20,6 +21,7 @@ const SandwichApp = () => {
                     <Route path="/" element={<Homepage />} />
                 </Routes>
             </Router>
+            <Footer />
         </div>
     )
 };
