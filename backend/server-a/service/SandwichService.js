@@ -1,5 +1,6 @@
 'use strict';
-
+const mongoose = require('mongoose');
+let Sandwich = require('../models/Sandwich');
 
 /**
  * Add a new sandwich to the store. Needs an API key.
@@ -9,7 +10,13 @@
  **/
 exports.addSandwich = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    const newSandwich = new Sandwich.Sandwich(body);
+    newSandwich.save().then(() => {
+        resolve(body);
+    }).catch((err) => {
+        console.log('Sandwich not saved successfully');
+        reject(err)
+    });
   });
 }
 
@@ -55,16 +62,13 @@ exports.getSandwichById = function(sandwichId) {
  **/
 exports.getSandwiches = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "bytes": [],
-  "empty": true
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    Sandwich.Sandwich.find(function (err, sandwiches) {
+        if (err) {
+            reject(err);
+            return;
+        }
+        resolve(sandwiches);
+    });
   });
 }
 

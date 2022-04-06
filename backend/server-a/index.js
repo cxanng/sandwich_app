@@ -9,6 +9,7 @@ var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 let cors = require('cors');
 var serverPort = 8080;
+require('./models/db')();
 
 //cors configuration
 let whitelist = ['http://localhost:3000', 'http://127.0.0.1:8080']
