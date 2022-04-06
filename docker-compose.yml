@@ -14,23 +14,25 @@ services:
   # server-a is based on the Docker image the groups produce and build themselves.
   server-a:
     # Change the image information to match your server A image
-    image: # $USERNAME/$IMAGENAME:$TAG, something like group000/node-swagger:3a
+    image: groupnas01/node:10
+    container_name: server-a-container
     # 'depends_on' and 'command' are  to be used when used
     # with RabbitMQ service in this file. 'depends_on' must be set
     # to RabbitMQ service's name from this file, and 'command'
     # can be modified to be anything, but what is given should
     # work. Just uncomment them
-    # depends_on:
-    #   -  rapid-runner-rabbit
-    # command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
+    depends_on:
+       - rapid-runner-rabbit
+       - database
+    command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
     build:
       dockerfile: Dockerfile
       context:  ./backend/server-a
     # Here we map the port 8080 of the container to the
-    # port 12345 of the host. Container port has been exposed
+    # port 8080 of the host. Container port has been exposed
     # in the node:10 Docker Hub Dockerfile.
     ports:
-      - "12345:8080"
+      - "8080:8080"
     networks:
       - backend
 
@@ -42,11 +44,17 @@ services:
   # A set of needed Docker instructions like 'image:' are shown
   # below, groups should set their values. Groups are free to
   # CRUD the set of instructions as they see fit.
-  # rapid-runner-rabbit:
-  #   image: rabbitmq:3-management
-  #   ports:
-  #   expose:
-  #   networks:
+  rapid-runner-rabbit:
+     image: rabbitmq:3-management
+     container_name: rabbitmq-container
+     hostname: "rapid-runner-rabbit"
+    # the list of ports that will be mapped from the container to the outside world, 
+    # for interacting with the queue and the web UI.
+     ports:
+      - "5672:5672"
+      - "15672:15672"
+     networks:
+      - backend
 
   # much of the server-b service entry can be copied from server-a
   # service above. server-b directory Dockerfile has more
@@ -54,15 +62,20 @@ services:
   # A set of needed Docker instructions like 'image:' are shown
   # below, groups should set their values. Groups are free to
   # CRUD this set of instructions as they see fit.
-  # server-b:
-      # image:
-      # depends_on:
-      # command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
-      # build:
-      #   dockerfile:
-      #   context:
-      # expose:
-      # networks:
+  server-b:
+      image: groupnas02/node:10
+      container_name: server-b-container
+      depends_on:
+        - rapid-runner-rabbit
+        - database
+      command: ["./utils/wait-for-it.sh", "rapid-runner-rabbit:5672", "--",  "npm", "start"]
+      build:
+        dockerfile: Dockerfile
+        context: ./backend/server-b
+      ports:
+        - "8082:8082"
+      networks:
+        - backend
 
   # Your group might want to use a database to store some data
   # You can use any database you wish, PostgreSQL, MySQL and
@@ -70,7 +83,19 @@ services:
   # But some groups could find a way to do this without
   # databases (but I could not :-) )
   # database-service would go here.
-  #database:
+  database:
+    image: mongo:latest
+    container_name: mongo-container
+    restart: always
+    # mount volume named db_data with directory /var/lib/mongo of the container database
+    volumes:
+      - db_data:/var/lib/mongo
+    environment:
+      MONGO_INITDB_DATABASE: appdb
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
 
 # Here we create a named network, that all the backend components
 # must be added to for them to be able to communicate through
@@ -83,4 +108,5 @@ networks:
 # Documentation: https://docs.docker.com/storage/volumes/
 # Personally I like to look at the database's image's Dockerfile
 # in the Docker Hub to see what directory it uses to store data.
-# volumes:
+volumes:
+  db_data: {}
