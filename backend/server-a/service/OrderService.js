@@ -77,9 +77,10 @@ exports.getOrders = function() {
 
 /**
  * Update an order by its ID
+ * IDs must be positive integers
  *
  * Order of orderId will be updated
- * new data will be in the 'body' parameter
+ * new order data will be in the 'body' parameter
  **/
  exports.updateOrder = function (orderId, body) {
   return new Promise(function (resolve, reject) {
