@@ -11,6 +11,13 @@ let cors = require('cors');
 var serverPort = 8080;
 require('./models/db')();
 
+
+var receiveTask = require('./rabbit-utils/receiveTask');
+
+//RabbitMQ Configuration
+var rabbitMQHost = "rapid-runner-rabbit:5672";
+var completedOrderQueueName = "completed-order-queue";
+
 //cors configuration
 let whitelist = ['http://localhost:3000', 'http://127.0.0.1:8080']
 let corsOptions = {
@@ -36,6 +43,8 @@ var swaggerDoc = jsyaml.safeLoad(spec);
 
 // Initialize the Swagger middleware
 swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
+  // Include cors
+  app.use(cors());
 
   // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
   app.use(middleware.swaggerMetadata());
@@ -56,3 +65,6 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   });
 
 });
+
+//Start listening for completed order queue
+receiveTask.getTask(rabbitMQHost, completedOrderQueueName);
