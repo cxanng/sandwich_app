@@ -3,10 +3,7 @@
 let Order = require('../models/Order');
 let Sandwich = require('../models/Sandwich');
 
-let rabbitMQHost = "rapid-runner-rabbit:5672";
-let queueOfOrder = "order-queue";
-
-var sendTask = require('../rabbit-utils/sendTask.js')
+let pushToRabbit = require('../rabbit-utils/pushToRabbit.js');
 
 /**
  * Add an order for an sandwich
@@ -22,15 +19,17 @@ exports.addOrder = function(order) {
           return;
       }
       if (isEmpty(orderData)) {
-          reject('No sandwich found for given ID...');
-      } else {
+          reject('No sandwich order found for given ID...');
+      } 
+      else {
+          // add order with status received
           const newOrder = new Order.Order({sandwichId: orderData.id, status: "received"});
           newOrder.save().then(() => {
               console.log('Order saved successfully');
               resolve(orderData);
-              sendTask.addTask(rabbitMQHost, queueOfOrder, orderData);
+              pushToRabbit.pushReceivedOrderToQueue();
           }).catch((err) => {
-              console.log('Order saved successfully');
+              console.log('Order not saved successfully');
               reject(err);
           });
       }
@@ -47,13 +46,30 @@ exports.addOrder = function(order) {
  **/
 exports.getOrderById = function(orderId) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {"empty": false};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    Order.Order.findOne({id: orderId}, function (err, orderData) {
+      if (err) {
+          console.log(err)
+          return;
+      }
+      if (isEmpty(orderData)) {
+          reject('No sandwich order found for given ID...');
+      } 
+      else {
+          console.log('getOrderById');
+          Sandwich.Sandwich.findOne({id: orderData.sandwichId}, function (err, sandwichData) {
+              if (err) {
+                  console.log(err)
+                  return;
+              }
+              if(!isEmpty(sandwichData)){
+                  resolve({id: orderData.id, sandwichId: sandwichData.id, status: orderData.status});
+              } 
+              else {
+                  reject('No sandwich order found for given ID...');
+              }
+          });
+      }
+    });
   });
 }
 
@@ -83,6 +99,7 @@ exports.getOrders = function() {
  * new order data will be in the 'body' parameter
  **/
  exports.updateOrder = function (orderId, body) {
+  console.log('update order from A');
   return new Promise(function (resolve, reject) {
       Order.Order.findOneAndUpdate({id: orderId}, body, {new: true}, function (err, order) {
           if (err) {
@@ -93,6 +110,30 @@ exports.getOrders = function() {
       })
   });
 };
+
+/**
+ * Find all order by a status
+ * Status must be string
+ *
+ * returns array of Orders
+ **/
+ exports.getOrderByStatus = function(status) {
+  return new Promise(function(resolve, reject) {
+      Order.Order.find({status: status}, function (err, orders) {
+          if (err) {
+              console.log(err);
+              return;
+          }
+          if (!orders.length) {
+              reject('No sandwich order found for '+status+' status...');
+          } 
+          else {
+              resolve(orders);
+          }
+      });
+  });
+};
+
 
 
 /**

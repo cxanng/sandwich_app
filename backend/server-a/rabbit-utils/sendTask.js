@@ -28,6 +28,7 @@ module.exports.addTask = function(rabbitHost, queueName, order){
                             console.log(new Date(), 'Message acked');
                             status = "inQueue";
                         }
+                        // change order status to inQueue
                         Order.updateOrder(order_id, {status: status})
                             .then(function (response) {
                                 console.log("Order updated: ", response);
