@@ -3,7 +3,11 @@
 let Order = require('../models/Order');
 let Sandwich = require('../models/Sandwich');
 
-let pushToRabbit = require('../rabbit-utils/pushToRabbit.js');
+let sendTask = require('../rabbit-utils/sendTask');
+
+//RabbitMQ Configuration
+let rabbitMQHost = "rapid-runner-rabbit:5672";
+let receivedOrderQueueName = "received-order-queue";
 
 /**
  * Add an order for an sandwich
@@ -27,7 +31,7 @@ exports.addOrder = function(order) {
           newOrder.save().then(() => {
               console.log('Order saved successfully');
               resolve(orderData);
-              pushToRabbit.pushReceivedOrderToQueue();
+              sendOrder();
           }).catch((err) => {
               console.log('Order not saved successfully');
               reject(err);
@@ -139,10 +143,22 @@ exports.getOrders = function() {
 /**
  *  Check object is Empty
  */
-function isEmpty(obj) {
+const isEmpty = function(obj) {
   for(let key in obj) {
       if(obj.hasOwnProperty(key))
           return false;
   }
   return true;
 }
+
+// Send all received order to received queue
+const sendOrder = function() {
+  exports.getOrderByStatus("received").then((orderData) => {
+    console.log("pushReceivedOrderToQueue");
+      for(let i = 0; i < orderData.length; i++) {
+          let order = orderData[i];
+          sendTask.addTask(rabbitMQHost, receivedOrderQueueName, order);
+      }
+  }); 
+};
+
