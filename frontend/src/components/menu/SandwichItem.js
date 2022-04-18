@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/esm/Spinner';
 import { BsFillCartPlusFill } from 'react-icons/bs';
 
 import '../../stylesheets/menu/sandwichItem.css';
+import Sandwich from '../../assets/sandwich.webp';
+import { placeNewOrder } from '../../services/order';
 
 const SandwichItem = ({
+  sandwichId,
   breadType,
   toppings,
   name,
   img="",
 }) => {
+  const [ loading, setLoading ] = useState(false);
+
+  const handlePlaceOrder = async () => {
+    try {
+      setLoading(true);
+      await placeNewOrder(sandwichId);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <Card className='sandwich-item'>
-      <Card.Img className='sandwich-item-img' variant='top' src={img} />
+      <Card.Img className='sandwich-item-img' variant='top' src={Sandwich} />
       <Card.Body className='sandwich-item-body'>
         <Card.Title className='sandwich-item-title'>{name}</Card.Title>
         <div className='sandwich-item-text'>
@@ -26,9 +42,20 @@ const SandwichItem = ({
           </ul>
         </div>
         <div className='sandwich-item-action'>
-          <Button>
-            <BsFillCartPlusFill className='sandwich-item-icon'/>
-            <span>Add to cart</span>
+          <Button onClick={handlePlaceOrder} disabled={loading}>
+            {loading ? 
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              /> :
+              <>
+                <BsFillCartPlusFill className='sandwich-item-icon'/>
+                <span>Order</span>
+              </>
+          }
           </Button>
         </div>  
       </Card.Body>
