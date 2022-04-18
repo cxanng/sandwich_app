@@ -17,6 +17,7 @@
   height: 180px;
   border: none;
   border-radius: 10px;
+  object-fit: cover;
 }
 
 .sandwich-item-title {
@@ -54,15 +55,19 @@
 .sandwich-item-action button {
   width: 200px;
   height: 46px;
-  color: white;
-  background-color: red;
-  border: none;
+  color: red;
+  background-color: #F7ECDE;
+  border: 2px solid red;
   border-radius: 10px;
   font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  font-size: 1.1rem;
 }
 
 .sandwich-item-action button:hover {
-  background-color: rgb(250, 52, 52);
+  background-color: red;
+  border: 2px solid red;
+  color: white;
 }
 
 .sandwich-item-icon {
