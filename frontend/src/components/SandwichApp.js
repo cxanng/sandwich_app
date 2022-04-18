@@ -10,6 +10,7 @@ import NavBar from "./navBarAndFooter/NavBar";
 import Footer from "./navBarAndFooter/Footer";
 import Homepage from "./homepage/Homepage";
 import Menu from "./menu/Menu";
+import Order from "./order/Order";
 
 const SandwichApp = () => {
     return (
@@ -19,6 +20,7 @@ const SandwichApp = () => {
 
                 <Routes>
                     <Route path="/menu" element={<Menu />} />
+                    <Route path="/order" element={<Order />} />
                     <Route path="/" element={<Homepage />} />
                 </Routes>
             </Router>
