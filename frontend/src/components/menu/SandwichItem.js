@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/esm/Spinner';
+
 import { BsFillCartPlusFill } from 'react-icons/bs';
 
 import '../../stylesheets/menu/sandwichItem.css';
 import Sandwich from '../../assets/sandwich.webp';
-import { placeNewOrder } from '../../services/order';
+
 
 const SandwichItem = ({
   sandwichId,
@@ -14,17 +15,12 @@ const SandwichItem = ({
   toppings,
   name,
   img="",
+  loading,
+  handleOpenModal,
 }) => {
-  const [ loading, setLoading ] = useState(false);
 
-  const handlePlaceOrder = async () => {
-    try {
-      setLoading(true);
-      await placeNewOrder(sandwichId);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+  const handleOrderButton = () => {
+    handleOpenModal(sandwichId);
   }
 
   return (
@@ -42,7 +38,7 @@ const SandwichItem = ({
           </ul>
         </div>
         <div className='sandwich-item-action'>
-          <Button onClick={handlePlaceOrder} disabled={loading}>
+          <Button onClick={handleOrderButton} disabled={loading}>
             {loading ? 
               <Spinner
                 as="span"

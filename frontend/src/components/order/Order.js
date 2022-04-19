@@ -46,7 +46,6 @@ const Order = () => {
     }
   };
 
-
   return (
     <div className="order">
       {loading && <Spinner animation='border' />}
@@ -96,7 +95,7 @@ const Order = () => {
           </InputGroup>
           <Button 
               onClick={() => getOrderList()}
-              disabled={loading}  
+              disabled={loading}
           >
             <GrRefresh />
           </Button>
