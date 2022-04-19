@@ -11,13 +11,13 @@ import Footer from "./navBarAndFooter/Footer";
 import Homepage from "./homepage/Homepage";
 import Menu from "./menu/Menu";
 import Order from "./order/Order";
+import '../stylesheets/sandwichApp.css';
 
 const SandwichApp = () => {
     return (
         <div className="sandwich-app">
             <Router>
                 <NavBar />
-
                 <Routes>
                     <Route path="/menu" element={<Menu />} />
                     <Route path="/order" element={<Order />} />

@@ -1,1 +1,17 @@
 
+html, body, #root {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+#root{
+  height: 100%;
+  margin-top: 85px;
+}
+
+.App {
+  height: calc(100% - 85px);
+  min-height: calc(100vh - 85px);
+  background-color: #FBF8F1; 
+}
