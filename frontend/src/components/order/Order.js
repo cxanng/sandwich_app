@@ -15,7 +15,7 @@ const Order = () => {
   const [ orderList, setOrderList ] = useState([]);
   const [ sandwichList, setSandwichList ] = useState([]);
   const [ loading, setLoading ] = useState(false);
-  const [ filter, setFilter ] = useState('ready');
+  const [ filter, setFilter ] = useState('');
   const [ search, setSearch ] = useState('');
 
   useEffect(() => {
@@ -46,37 +46,48 @@ const Order = () => {
     }
   };
 
+  const handleFilteringAndFetching = async (filter) => {
+    getOrderList();
+    setFilter(filter);
+  }
+
   return (
     <div className="order">
-      {loading && <Spinner animation='border' />}
+      {/* {loading && <Spinner animation='border' />} */}
       <div className="order-action">
         <div className="order-button-group">
           <Button 
-            onClick={() => setFilter('ready')}
+            onClick={() => handleFilteringAndFetching('')}
+            disabled={filter === ''}
+          >
+            All
+          </Button>
+          <Button 
+            onClick={() => handleFilteringAndFetching('ready')}
             disabled={filter === 'ready'}
           >
             Ready
           </Button>
           <Button 
-            onClick={() => setFilter('received')}
+            onClick={() => handleFilteringAndFetching('received')}
             disabled={filter === 'received'}
           >
             Received
           </Button>
           <Button 
-            onClick={() => setFilter('inQueue')}
+            onClick={() => handleFilteringAndFetching('inQueue')}
             disabled={filter === 'inQueue'}
           >
             In queue
           </Button>
           <Button 
-            onClick={() => setFilter('ordered')}
+            onClick={() => handleFilteringAndFetching('ordered')}
             disabled={filter === 'ordered'}
           >
             Ordered
           </Button>
           <Button 
-            onClick={() => setFilter('failed')}
+            onClick={() => handleFilteringAndFetching('failed')}
             disabled={filter === 'failed'}
           >
             Failed
@@ -103,14 +114,15 @@ const Order = () => {
       </div>
       <div className="order-container">
         <h1 className="order-type">
-          {filter === 'inQueue' 
+          {!filter ? 'All orders'
+          : filter === 'inQueue' 
           ? 'In queue' 
           : filter.charAt(0).toUpperCase() + filter.slice(1)}
         </h1>
         {
-          orderList.some(item => item.status === filter && item.id.toString().toUpperCase().includes(search.toUpperCase())) ?
+          orderList.some(item => (!filter || item.status === filter) && item.id.toString().toUpperCase().includes(search.toUpperCase())) ?
           <div className="order-list">
-            {orderList.filter(item => item.status === filter && item.id.toString().toUpperCase().includes(search.toUpperCase()))
+            {orderList.filter(item => (!filter || item.status === filter) && item.id.toString().toUpperCase().includes(search.toUpperCase()))
               .map(item => (
                 <OrderItem 
                   orderId={item.id}
