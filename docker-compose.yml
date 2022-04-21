@@ -35,6 +35,7 @@ services:
       - "8080:8080"
     networks:
       - backend
+      - front-to-back
 
   # You can base this service on the rabbitmq:3-management Docker Hub image.
   # You need to expose the RabbitMQ port 5672 to other containers
@@ -97,11 +98,28 @@ services:
     networks:
       - backend
 
+  frontend:
+    image: groupnas03/node:17
+    container_name: frontend-container
+    depends_on:
+      - server-a 
+      - server-b 
+    command: ["npm", "start"]
+    build: 
+      dockerfile: Dockerfile
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - front-to-back
+    
+
 # Here we create a named network, that all the backend components
 # must be added to for them to be able to communicate through
 # exposed ports.
 networks:
   backend:
+  front-to-back:
 
 # If you use databases for storing information, you can define
 # their volumes here.
