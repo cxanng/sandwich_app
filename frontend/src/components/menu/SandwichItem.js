@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/esm/Spinner';
-
 import { BsFillCartPlusFill } from 'react-icons/bs';
 
 import '../../stylesheets/menu/sandwichItem.css';
 import Sandwich from '../../assets/sandwich.webp';
-
 
 const SandwichItem = ({
   sandwichId,

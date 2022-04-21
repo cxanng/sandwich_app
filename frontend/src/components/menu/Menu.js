@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Sandwich from '../../assets/sandwich.webp';
+import Alert from 'react-bootstrap/Alert';
 
 import { placeNewOrder } from '../../services/order';
 
@@ -16,10 +17,19 @@ const Menu = () => {
   const [ loading, setLoading ] = useState(false);
   const [ modalOpen, setModalOpen ] = useState(false);
   const [ currentSandwich, setCurrentSandwich ] = useState({});
+  const [ noti, setNoti ] = useState({
+    type: 'noti' || 'error',
+    message: ''
+  });
 
   useEffect(() => {
     getSandwichList();
   }, []);
+
+  const setNotificationMessage = (type, message) => {
+    setNoti({ type, message });
+    setTimeout(() => setNoti({ type: 'noti', message: '' }), 3000);
+  }
 
   const getSandwichList = async () => {
     try {
@@ -29,6 +39,7 @@ const Menu = () => {
       setLoading(false);
     } catch (err) {
       console.log(err);
+      setNotificationMessage('error', 'Cannot get the menu.');
     }
   };
 
@@ -45,15 +56,21 @@ const Menu = () => {
       await placeNewOrder(sandwichId);
       setLoading(false);
       setModalOpen(false);
+      setNotificationMessage('noti', 'Ordered successfully!');
     } catch (err) {
       console.log(err);
+      setNotificationMessage('error', 'Order failed. Please try again!');
     }
   }
 
   return (
     <div className="menu">
       {loading && <Spinner animation='border' />}
-      
+      {noti.message && 
+        <Alert variant={noti.type === 'noti' ? 'success' : 'danger'} style={{marginTop: '10px', width: '50%'}}>
+          {noti.message}
+        </Alert>
+      }
       <Modal show={modalOpen} onHide={() => setModalOpen(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Order confirmation</Modal.Title>
