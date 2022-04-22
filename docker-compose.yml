@@ -104,6 +104,8 @@ services:
     depends_on:
       - server-a 
       - server-b 
+    environment:
+      - SERVER_URL=server-a:8080
     command: ["npm", "start"]
     build: 
       dockerfile: Dockerfile

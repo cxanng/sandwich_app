@@ -10,7 +10,7 @@ export const placeNewOrder = async (sandwichId) => {
   const body = {
     sandwichId: sandwichId
   }
-  const response = await axios.post(`${SERVER_URL}/v1/order`, body);
+  const response = await axios.post(`${process.env.SERVER_URL ? process.env.SERVER_URL : SERVER_URL}/v1/order`, body);
   console.log(response.data);
   return response.data;
 }
